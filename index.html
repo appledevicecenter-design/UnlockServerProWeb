@@ -1,170 +1,174 @@
+<?php
+// Conexión a la base de datos
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db   = "web_db";
+
+$conexion = new mysqli($host, $user, $pass, $db);
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
+
+// Procesar el formulario
+$mensajeSweet = ""; // Variable para SweetAlert
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $conexion->real_escape_string($_POST['nombre']);
+    $email = $conexion->real_escape_string($_POST['email']);
+    $telefono = $conexion->real_escape_string($_POST['telefono']);
+    $plan = $conexion->real_escape_string($_POST['plan']);
+    $metodo = $conexion->real_escape_string($_POST['metodo']);
+    $mensaje = $conexion->real_escape_string($_POST['mensaje']);
+
+    $sql = "INSERT INTO pedidos (nombre, email, telefono, plan, metodo, mensaje)
+            VALUES ('$nombre', '$email', '$telefono', '$plan', '$metodo', '$mensaje')";
+
+    if ($conexion->query($sql) === TRUE) {
+        $mensajeSweet = "success|¡Plan contratado con éxito!|Has seleccionado el plan: $plan";
+    } else {
+        $mensajeSweet = "error|Error|No se pudo registrar el plan: ".$conexion->error;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soluciones Digitales Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        body {
-            background: #0f172a;
-            color: white;
-        }
-        /* HERO */
-        
-        .hero {
-            min-height: 100vh;
-            background: linear-gradient(120deg, #0f172a, #1e293b);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 50px 20px;
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        /* BOTON DESLIZANTE */
-        
-        .btn-slide {
-            margin-top: 30px;
-            position: relative;
-            display: inline-block;
-            padding: 15px 40px;
-            border: 2px solid #38bdf8;
-            color: white;
-            text-decoration: none;
-            overflow: hidden;
-            transition: 0.3s;
-            z-index: 1;
-        }
-        
-        .btn-slide::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: #38bdf8;
-            transition: 0.3s;
-            z-index: -1;
-        }
-        
-        .btn-slide:hover::before {
-            left: 0;
-        }
-        
-        .btn-slide:hover {
-            color: #0f172a;
-        }
-        /* SERVICIOS */
-        
-        .services {
-            margin-top: 40px;
-            /* ahora dentro del hero, más cerca del texto */
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            width: 100%;
-            max-width: 1200px;
-        }
-        
-        .card {
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 15px;
-            transition: 0.4s;
-        }
-        
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
-        }
-        
-        .card h3 {
-            margin-bottom: 15px;
-            color: #38bdf8;
-        }
-        /* CTA */
-        
-        .cta {
-            padding: 80px 20px;
-            background: #020617;
-            text-align: center;
-        }
-        
-        footer {
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-            background: #020617;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluciones Digitales Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+html {scroll-behavior:smooth;}
+body {background:#0f172a;color:white;}
+section{text-align:center;}
+.hero {background:linear-gradient(120deg,#0f172a,#1e293b);padding:100px 20px 80px;}
+.hero h1{font-size:3rem;max-width:900px;margin:0 auto;}
+.hero p{margin:20px auto 0;font-size:1.15rem;opacity:.9;max-width:850px;line-height:1.6;}
+.btn-slide{margin-top:35px;position:relative;display:inline-block;padding:15px 45px;border:2px solid #38bdf8;color:white;text-decoration:none;font-size:1.05rem;overflow:hidden;transition:.3s;z-index:1;cursor:pointer;}
+.btn-slide::before{content:"";position:absolute;inset:0;left:-100%;background:#38bdf8;transition:.3s;z-index:-1;}
+.btn-slide:hover::before{left:0;}
+.btn-slide:hover{color:#0f172a;}
+.services{margin:80px auto 0;padding:0 10%;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px;}
+.card{background:#1e293b;padding:30px;border-radius:15px;transition:.4s;text-align:left;}
+.card:hover{transform:translateY(-10px);box-shadow:0 0 25px rgba(56,189,248,.4);}
+.card h3{color:#38bdf8;margin-bottom:10px;}
+.card p{font-size:.9rem;opacity:.85;line-height:1.5;margin-bottom:10px;}
+.plans{background:#020617;padding:110px 10%;}
+.plans h2{margin-bottom:15px;}
+.plan-grid{margin-top:60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:35px;}
+.plan{background:#1e293b;padding:40px 30px;border-radius:20px;text-align:left;}
+.plan.destacado{border:2px solid #38bdf8;transform:scale(1.05);}
+.plan h3{color:#38bdf8;text-align:center;}
+.price{font-size:2.4rem;margin:15px 0;text-align:center;}
+.plan p{font-size:.95rem;opacity:.85;margin-bottom:15px;text-align:center;}
+.plan ul{list-style:none;margin-bottom:25px;}
+.plan ul li{margin:8px 0;font-size:.9rem;}
+.plan ul li::before{content:"✔ ";color:#38bdf8;}
+.payment{background:#020617;padding:110px 10%;}
+.payment-form{margin:50px auto 0;max-width:520px;display:flex;flex-direction:column;gap:15px;}
+.payment-form input,.payment-form select,.payment-form textarea{padding:15px;border-radius:10px;border:none;outline:none;font-size:1rem;}
+.payment-info{display:none;background:#1e293b;padding:15px;border-radius:10px;font-size:.95rem;}
+.card-fields{display:none;flex-direction:column;gap:10px;}
+.card-fields input{width:100%;}
+footer{font-size:.9rem;padding:20px;background:#020617;text-align:center;}
+</style>
 </head>
-
 <body>
 
-    <section class="hero">
-        <div>
-            <h1>Desarrollo Web & Sistemas Empresariales</h1>
-            <p>Impulsamos tu negocio con tecnología moderna y soluciones digitales</p>
+<!-- HERO -->
+<section class="hero">
+<h1>Desarrollo Web & Sistemas Empresariales</h1>
+<p>Creamos páginas web profesionales, sistemas empresariales y soluciones digitales modernas enfocadas en automatizar procesos, mejorar tu presencia online y ayudarte a vender más con tecnología segura, rápida y escalable.</p>
 
-            <!-- SERVICIOS DENTRO DEL HERO -->
-            <section id="servicios" class="services">
-                <div class="card">
-                    <h3>🌐 Páginas Web</h3>
-                    <p>Diseños modernos, rápidos y optimizados para convertir clientes.</p>
-                </div>
+<div class="services">
+<div class="card"><h3>🌐 Páginas Web</h3><p>Diseños modernos y rápidos</p><p>Desarrollamos sitios web atractivos y funcionales, optimizados para móviles y buscadores, que convierten visitantes en clientes.</p></div>
+<div class="card"><h3>🏢 Sistemas Empresariales</h3><p>ERP y CRM a medida</p><p>Automatizamos tus procesos internos con sistemas empresariales personalizados para mejorar la eficiencia y la gestión de tu negocio.</p></div>
+<div class="card"><h3>📱 Apps Web</h3><p>Escalables y seguras</p><p>Creamos plataformas web interactivas y seguras que se adaptan a las necesidades de tu empresa y permiten un crecimiento escalable.</p></div>
+<div class="card"><h3>🚀 Marketing Digital</h3><p>Automatización y ventas</p><p>Impulsamos tu presencia online con estrategias de marketing digital, posicionamiento SEO, campañas en redes y automatización de ventas.</p></div>
+</div>
 
-                <div class="card">
-                    <h3>🏢 Sistemas Empresariales</h3>
-                    <p>ERP, CRM, inventarios y soluciones a medida para tu empresa.</p>
-                </div>
+<a href="#planes" class="btn-slide">VER PLANES</a>
+</section>
 
-                <div class="card">
-                    <h3>📱 Aplicaciones Web</h3>
-                    <p>Plataformas interactivas y escalables para tu negocio.</p>
-                </div>
+<!-- PLANES -->
+<section class="plans" id="planes">
+<h2>Planes de Servicio</h2>
+<div class="plan-grid">
+<div class="plan"><h3>Básico</h3><div class="price">$199</div><p>Ideal para emprendedores que recién empiezan</p><ul><li>Página web profesional</li><li>Diseño responsive</li><li>Formulario de contacto</li><li>Soporte básico</li></ul><a href="#pago" class="btn-slide" onclick="seleccionarPlan('Básico - $199')">Elegir</a></div>
+<div class="plan destacado"><h3>Profesional</h3><div class="price">$399</div><p>Perfecto para negocios en crecimiento</p><ul><li>Web avanzada</li><li>Sistema administrativo</li><li>Panel de control</li><li>Optimización SEO</li><li>Soporte prioritario</li></ul><a href="#pago" class="btn-slide" onclick="seleccionarPlan('Profesional - $399')">Elegir</a></div>
+<div class="plan"><h3>Empresarial</h3><div class="price">$799</div><p>Solución completa a medida</p><ul><li>Sistema personalizado</li><li>Automatización de procesos</li><li>Base de datos avanzada</li><li>Integraciones externas</li><li>Soporte premium</li></ul><a href="#pago" class="btn-slide" onclick="seleccionarPlan('Empresarial - $799')">Elegir</a></div>
+</div>
+</section>
 
-                <div class="card">
-                    <h3>🚀 Marketing Digital</h3>
-                    <p>Posicionamiento, automatización y crecimiento online.</p>
-                </div>
-            </section>
+<!-- FORMULARIO DE PAGO -->
+<section class="payment" id="pago">
+<h2>Contratar Plan</h2>
+<p>Completa tus datos para continuar con el pago</p>
 
-            <a href="index.php" class="btn-slide">Ver Servicios</a>
+<form class="payment-form" method="POST" action="">
+<input type="text" name="nombre" placeholder="Nombre completo" required>
+<input type="email" name="email" placeholder="Correo electrónico" required>
+<input type="tel" name="telefono" placeholder="Teléfono" required>
+<input type="text" id="planSeleccionado" name="plan" placeholder="Plan seleccionado" readonly required>
 
-        </div>
-    </section>
+<select id="metodoPago" name="metodo" onchange="mostrarCamposPago()" required>
+<option value="">Selecciona método de pago</option>
+<option value="tarjeta">Tarjeta de crédito / débito</option>
+<option value="paypal">PayPal</option>
+<option value="transferencia">Transferencia bancaria</option>
+<option value="yape">Yape / Plin</option>
+<option value="binance">Binance</option>
+</select>
 
-    <section class="cta" id="contacto">
-        <h2>¿Listo para llevar tu negocio al siguiente nivel?</h2>
-        <br>
-        <a href="#" class="btn-slide">Contáctanos</a>
-    </section>
+<div class="payment-info" id="infoPaypal">Correo PayPal: tuemail@paypal.com</div>
+<div class="payment-info" id="infoTransferencia">Cuenta Bancaria: 1234567890</div>
+<div class="payment-info" id="infoYape">Número Yape/Plin: +51987654321</div>
+<div class="payment-info" id="infoBinance">Cuenta Binance: tuemail@binance.com</div>
 
-    <footer>
-        © 2026 Soluciones Digitales Pro - Todos los derechos reservados
-    </footer>
+<div class="card-fields" id="tarjeta">
+<input type="text" placeholder="Número de tarjeta">
+<input type="text" placeholder="Nombre en tarjeta">
+<input type="text" placeholder="Fecha de expiración MM/AA">
+<input type="text" placeholder="CVV">
+</div>
 
+<textarea name="mensaje" placeholder="Mensaje adicional (opcional)"></textarea>
+<button type="submit" class="btn-slide">Confirmar pedido</button>
+</form>
+</section>
+
+<footer>© 2026 Soluciones Digitales Pro</footer>
+
+<script>
+function seleccionarPlan(plan){document.getElementById("planSeleccionado").value=plan;}
+function mostrarCamposPago(){
+const metodo=document.getElementById("metodoPago").value;
+const tarjetas=document.getElementById("tarjeta");
+const infoPaypal=document.getElementById("infoPaypal");
+const infoTrans=document.getElementById("infoTransferencia");
+const infoYape=document.getElementById("infoYape");
+const infoBinance=document.getElementById("infoBinance");
+tarjetas.style.display="none";infoPaypal.style.display="none";infoTrans.style.display="none";infoYape.style.display="none";infoBinance.style.display="none";
+if(metodo==="tarjeta") tarjetas.style.display="flex";
+if(metodo==="paypal") infoPaypal.style.display="block";
+if(metodo==="transferencia") infoTrans.style.display="block";
+if(metodo==="yape") infoYape.style.display="block";
+if(metodo==="binance") infoBinance.style.display="block";
+}
+
+// SweetAlert al cargar la página si hay mensaje
+<?php if(!empty($mensajeSweet)): 
+    list($tipo,$titulo,$texto) = explode("|",$mensajeSweet); ?>
+Swal.fire({
+    icon: '<?php echo $tipo; ?>',
+    title: '<?php echo $titulo; ?>',
+    text: '<?php echo $texto; ?>',
+    confirmButtonColor: '#38bdf8'
+});
+<?php endif; ?>
+</script>
 </body>
-
 </html>
