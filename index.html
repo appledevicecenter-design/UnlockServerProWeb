@@ -18,6 +18,7 @@
         body {
             background: #0f172a;
             color: white;
+            line-height: 1.6;
         }
 
         /* HERO */
@@ -28,139 +29,120 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 50px 20px;
+            padding: 60px 16px;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2.3rem;
+            margin-bottom: 15px;
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             opacity: 0.9;
-            max-width: 950px;
+            max-width: 750px;
             margin: 0 auto;
         }
 
         /* BOTÓN */
         .btn-slide {
-            margin-top: 35px;
-            position: relative;
+            margin: 30px auto 0;
             display: inline-block;
-            padding: 15px 40px;
+            padding: 14px 36px;
             border: 2px solid #38bdf8;
             color: white;
             text-decoration: none;
-            overflow: hidden;
+            background: transparent;
             transition: 0.3s;
-            z-index: 1;
             cursor: pointer;
         }
 
-        .btn-slide::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            left: -100%;
-            background: #38bdf8;
-            transition: 0.3s;
-            z-index: -1;
-        }
-
-        .btn-slide:hover::before {
-            left: 0;
-        }
-
         .btn-slide:hover {
+            background: #38bdf8;
             color: #0f172a;
         }
 
         /* SERVICIOS */
         .services {
-            margin-top: 45px;
+            margin: 45px auto 0;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 18px;
             width: 100%;
-            max-width: 1250px;
+            max-width: 720px;
         }
 
         .card {
             background: #1e293b;
-            padding: 30px;
-            border-radius: 15px;
-            transition: 0.4s;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+            padding: 22px;
+            border-radius: 14px;
+            transition: 0.3s;
         }
 
         .card h3 {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
             color: #38bdf8;
         }
 
         .card p {
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 0.9rem;
             opacity: 0.9;
         }
 
         /* PRODUCTOS */
         .products {
             display: none;
-            padding: 80px 20px;
+            padding: 70px 16px;
             background: #020617;
             text-align: center;
         }
 
         .products h2 {
-            margin-bottom: 40px;
-            font-size: 2.2rem;
+            font-size: 2rem;
+            margin-bottom: 35px;
         }
 
         .products-grid {
-            max-width: 1200px;
+            max-width: 720px;
             margin: auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
 
         .product-card {
             background: #1e293b;
-            padding: 25px;
-            border-radius: 15px;
-            transition: 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 0 20px rgba(56,189,248,0.4);
+            padding: 24px;
+            border-radius: 14px;
         }
 
         .product-card h3 {
+            font-size: 1.05rem;
             color: #38bdf8;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        .product-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
         .price {
             display: block;
-            margin: 15px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
+            margin: 12px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .product-card a {
             display: inline-block;
-            padding: 10px 25px;
+            padding: 10px 22px;
             border: 2px solid #38bdf8;
             color: white;
             text-decoration: none;
             transition: 0.3s;
+            font-size: 0.9rem;
         }
 
         .product-card a:hover {
@@ -170,32 +152,21 @@
 
         /* CTA */
         .cta {
-            padding: 80px 20px;
+            padding: 60px 16px;
             background: #020617;
             text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 1.6rem;
         }
 
         footer {
-            padding: 20px;
+            padding: 18px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background: #020617;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1.05rem;
-            }
-
-            .btn-slide {
-                width: 100%;
-                max-width: 280px;
-            }
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -212,33 +183,30 @@
 
             <section class="services">
 
-                <!-- TODO TU CONTENIDO ORIGINAL (NO SE BORRÓ NADA) -->
-
-                <div class="card"><h3>🌐 Páginas Web</h3><p>Diseños modernos, rápidos y optimizados.</p></div>
-                <div class="card"><h3>🏢 Sistemas Empresariales</h3><p>ERP, CRM e inventarios.</p></div>
-                <div class="card"><h3>📱 Aplicaciones Web</h3><p>Plataformas interactivas.</p></div>
-                <div class="card"><h3>🚀 Marketing Digital</h3><p>Crecimiento online.</p></div>
-                <div class="card"><h3>🔓 Desbloqueo Android</h3><p>FRP, patrón y PIN.</p></div>
-                <div class="card"><h3>🍏 Desbloqueo iCloud</h3><p>Apple compatibles.</p></div>
-                <div class="card"><h3>🛡️ MDM / KG</h3><p>Eliminación profesional.</p></div>
-                <div class="card"><h3>🛠️ Reparaciones</h3><p>Cambio de pantallas.</p></div>
-                <div class="card"><h3>🧩 Placas iPhone</h3><p>Libres de iCloud.</p></div>
-                <div class="card"><h3>📶 Sistema Claro</h3><p>Configuración.</p></div>
-                <div class="card"><h3>✅ Lista Blanca</h3><p>Registro IMEI.</p></div>
-                <div class="card"><h3>🎓 Cursos</h3><p>Capacitación técnica.</p></div>
+                <div class="card"><h3>🌐 Páginas Web</h3><p>Diseños modernos, rápidos y optimizados para convertir clientes.</p></div>
+                <div class="card"><h3>🏢 Sistemas Empresariales</h3><p>ERP, CRM, inventarios y soluciones a medida para tu empresa.</p></div>
+                <div class="card"><h3>📱 Aplicaciones Web</h3><p>Plataformas interactivas y escalables para tu negocio.</p></div>
+                <div class="card"><h3>🚀 Marketing Digital</h3><p>Posicionamiento, automatización y crecimiento online.</p></div>
+                <div class="card"><h3>🔓 Desbloqueo Android</h3><p>Eliminación de cuenta Google (FRP), patrón, PIN y contraseña.</p></div>
+                <div class="card"><h3>🍏 Desbloqueo iCloud</h3><p>Servicios profesionales para dispositivos Apple compatibles.</p></div>
+                <div class="card"><h3>🛡️ Desbloqueo MDM / KG</h3><p>Eliminación de perfiles MDM y bloqueos KG en equipos compatibles.</p></div>
+                <div class="card"><h3>🛠️ Cambio de Pantallas & Módulos</h3><p>Reemplazo profesional de pantallas, módulos y componentes.</p></div>
+                <div class="card"><h3>🧩 Placas Libres de iCloud (Apple)</h3><p>Pedidos de placas libres de iCloud – iPhone 6s al 17 Pro Max</p></div>
+                <div class="card"><h3>📶 Sistema Claro</h3><p>Activación y configuración en sistema Claro.</p></div>
+                <div class="card"><h3>✅ Registro en Lista Blanca</h3><p>Registro de IMEI para teléfonos reportados.</p></div>
+                <div class="card"><h3>🎓 Cursos y Asesoramientos</h3><p>Capacitación personalizada en desbloqueos y software móvil.</p></div>
 
             </section>
 
-            <!-- BOTÓN MODIFICADO (NO BORRADO) -->
-            <a class="btn-slide" onclick="mostrarProductos()">Ver Servicios</a>
+            <button class="btn-slide" onclick="mostrarProductos()">Ver Servicios</button>
         </div>
     </section>
 
-    <!-- PRODUCTOS -->
     <section id="productos" class="products">
         <h2>Productos y Precios</h2>
 
         <div class="products-grid">
+
             <div class="product-card">
                 <h3>🔓 FRP Android</h3>
                 <p>Eliminación de cuenta Google</p>
@@ -266,6 +234,7 @@
                 <span class="price">S/ 300.00</span>
                 <a href="https://wa.me/qr/DMEUKJAX3CP5P1" target="_blank">Contratar</a>
             </div>
+
         </div>
     </section>
 
