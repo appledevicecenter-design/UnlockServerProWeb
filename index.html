@@ -7,23 +7,23 @@ $db   = "web_db";
 
 $conexion2 = new mysqli($host, $user, $pass, $db);
 if ($conexion2->connect_error) {
-    die("Error de conexión: " . $conexion2->connect_error);
+    die("Error de conexión: " . $conexion->connect_error);
 }
 
 // Procesar el formulario
 $mensajeSweet = ""; // Variable para SweetAlert
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $conexion2->real_escape_string($_POST['nombre']);
-    $email = $conexion2->real_escape_string($_POST['email']);
-    $telefono = $conexion2->real_escape_string($_POST['telefono']);
-    $plan = $conexion2->real_escape_string($_POST['plan']);
-    $metodo = $conexion2->real_escape_string($_POST['metodo']);
-    $mensaje = $conexion2->real_escape_string($_POST['mensaje']);
+    $nombre = $conexion->real_escape_string($_POST['nombre']);
+    $email = $conexion->real_escape_string($_POST['email']);
+    $telefono = $conexion->real_escape_string($_POST['telefono']);
+    $plan = $conexion->real_escape_string($_POST['plan']);
+    $metodo = $conexion->real_escape_string($_POST['metodo']);
+    $mensaje = $conexion->real_escape_string($_POST['mensaje']);
 
     $sql = "INSERT INTO pedidos (nombre, email, telefono, plan, metodo, mensaje)
             VALUES ('$nombre', '$email', '$telefono', '$plan', '$metodo', '$mensaje')";
 
-    if ($conexion2->query($sql) === TRUE) {
+    if ($conexion->query($sql) === TRUE) {
         $mensajeSweet = "success|¡Plan contratado con éxito!|Has seleccionado el plan: $plan";
     } else {
         $mensajeSweet = "error|Error|No se pudo registrar el plan: ".$conexion2->error;
@@ -172,3 +172,4 @@ Swal.fire({
 </script>
 </body>
 </html>
+
