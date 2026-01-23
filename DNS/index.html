@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea tu DNS privado</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 420px;
+            margin: auto;
+            background: #020617;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 1.6em;
+        }
+        
+        .option {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #1d4ed8;
+        }
+        
+        .result {
+            margin-top: 15px;
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            word-break: break-all;
+        }
+        
+        .copy {
+            margin-top: 10px;
+            background: #16a34a;
+        }
+        
+        small {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🔐 Crea tu DNS privado</h1>
+        <p>Bloquea anuncios y evita bloqueos en Android.</p>
+
+        <div class="option">
+            <label>
+    <input type="radio" name="tipo" value="nextdns" checked>
+    <strong>NextDNS</strong> (recomendado)
+  </label>
+            <br><small>Automático, sin servidores</small>
+        </div>
+
+        <div class="option">
+            <label>
+    <input type="radio" name="tipo" value="propio">
+    <strong>Servidor propio</strong>
+  </label>
+            <br><small>Control total (avanzado)</small>
+        </div>
+
+        <button onclick="generarDNS()">🚀 Generar DNS</button>
+
+        <div id="resultado" class="result" style="display:none;"></div>
+        <button id="copiar" class="copy" style="display:none;" onclick="copiarDNS()">📋 Copiar DNS</button>
+
+        <hr style="margin:20px 0;border-color:#1e293b">
+
+        <h3>📱 Cómo usarlo en Android</h3>
+        <ol>
+            <li>Ajustes</li>
+            <li>Red e Internet</li>
+            <li>DNS privado</li>
+            <li>Nombre del proveedor</li>
+            <li>Pega el DNS generado</li>
+        </ol>
+
+    </div>
+
+    <script>
+        let dnsGenerado = "";
+
+        function generarDNS() {
+            const tipo = document.querySelector('input[name="tipo"]:checked').value;
+            const id = Math.random().toString(36).substring(2, 10);
+
+            if (tipo === "nextdns") {
+                dnsGenerado = id + ".dns.nextdns.io";
+            } else {
+                dnsGenerado = id + ".dns.unlockserverpro.io";
+            }
+
+            document.getElementById("resultado").style.display = "block";
+            document.getElementById("copiar").style.display = "block";
+            document.getElementById("resultado").innerHTML =
+                "<strong>DNS privado generado:</strong><br>" + dnsGenerado;
+        }
+
+        function copiarDNS() {
+            navigator.clipboard.writeText(dnsGenerado);
+            alert("DNS copiado ✔️");
+        }
+    </script>
+
+</body>
+
+</html>
