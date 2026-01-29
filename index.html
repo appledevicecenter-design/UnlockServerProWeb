@@ -202,6 +202,100 @@ footer{
     from{opacity:0; transform:translateY(30px);}
     to{opacity:1; transform:none;}
 }
+
+    /* ========================= */
+/* RESPONSIVE DESIGN */
+/* ========================= */
+
+/* TABLETS */
+@media (max-width: 992px){
+    .hero{
+        padding:70px 18px;
+    }
+
+    .hero p{
+        font-size:1rem;
+    }
+
+    .services{
+        gap:18px;
+    }
+
+    .products h2{
+        font-size:2.1rem;
+    }
+}
+
+/* CELULARES */
+@media (max-width: 600px){
+
+    body{
+        font-size:15px;
+    }
+
+    .hero h1{
+        font-size:2rem;
+    }
+
+    .hero p{
+        font-size:.95rem;
+    }
+
+    .services{
+        grid-template-columns:1fr;
+        margin-top:45px;
+    }
+
+    .card{
+        padding:22px;
+    }
+
+    .btn{
+        width:100%;
+        max-width:320px;
+        padding:14px 20px;
+    }
+
+    .products{
+        padding:70px 16px;
+    }
+
+    .products h2{
+        font-size:1.9rem;
+    }
+
+    .products-grid{
+        grid-template-columns:1fr;
+    }
+
+    .product-card{
+        padding:24px;
+    }
+
+    .price{
+        font-size:1.15rem;
+    }
+
+    .cta{
+        padding:70px 16px;
+    }
+
+    .cta h2{
+        font-size:1.6rem;
+    }
+}
+
+/* CELULARES MUY PEQUEÑOS */
+@media (max-width: 360px){
+    .hero h1{
+        font-size:1.8rem;
+    }
+
+    .btn{
+        font-size:.9rem;
+    }
+}
+
 </style>
 </head>
 
