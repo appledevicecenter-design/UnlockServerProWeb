@@ -1,57 +1,59 @@
 <?php
 header('Content-Type: application/json');
-
-// DB config
-$servername = "localhost";
-$dbname = "generador_imei";
-$dbuser = "root";
-$dbpass = "";
+require 'conexion.php';
 
 // Telegram
-$botToken = "AAEHuvJXvBhyg9KWYtqDh6dZc798Tck8l44";
-$chat_id = "8764642751";
+$botToken = "TU_TOKEN_AQUI";
+$chat_id = "TU_CHAT_ID";
 
 // Leer JSON
 $input = json_decode(file_get_contents('php://input'), true);
+
 $usuario = trim($input['usuario'] ?? '');
 $creditos = intval($input['creditos'] ?? 0);
 $monto = floatval($input['monto'] ?? 0);
 $metodo = trim($input['metodo'] ?? '');
 
-// Validación mínima
-if(!$usuario){
-    echo json_encode(['success'=>false,'msg'=>'Usuario vacío']);
+if (!$usuario) {
+    echo json_encode(['success' => false, 'msg' => 'Usuario vacío']);
     exit;
 }
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $dbuser, $dbpass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Verificar usuario
+$stmt = $conn->prepare("SELECT creditos FROM usuarios WHERE usuario=?");
+$stmt->bind_param("s", $usuario);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Ver si el usuario ya existe
-    $stmt = $conn->prepare("SELECT creditos FROM usuarios WHERE usuario=?");
-    $stmt->execute([$usuario]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($row = $result->fetch_assoc()) {
+    $nuevos = $row['creditos'] + $creditos;
 
-    if($row){
-        $nuevos = $row['creditos'] + $creditos;
-        $stmt = $conn->prepare("UPDATE usuarios SET creditos=? WHERE usuario=?");
-        $stmt->execute([$nuevos, $usuario]);
-    } else {
-        $stmt = $conn->prepare("INSERT INTO usuarios (usuario, creditos) VALUES (?, ?)");
-        $stmt->execute([$usuario, $creditos]);
-    }
+    if ($nuevos < 0) $nuevos = 0; // evita negativos
 
-    // Enviar mensaje a Telegram si es un pago real
-    if($creditos > 0 && $monto > 0){
-        $mensaje = "PAGO CONFIRMADO ✅\nUsuario: $usuario\nMétodo: $metodo\nCréditos: $creditos\nMonto: $$monto";
-        $url = "https://api.telegram.org/bot$botToken/sendMessage?chat_id=$chat_id&text=".urlencode($mensaje);
-        file_get_contents($url);
-    }
+    $update = $conn->prepare("UPDATE usuarios SET creditos=? WHERE usuario=?");
+    $update->bind_param("is", $nuevos, $usuario);
+    $update->execute();
 
-    echo json_encode(['success'=>true]);
-
-} catch(Exception $e){
-    echo json_encode(['success'=>false,'msg'=>$e->getMessage()]);
+} else {
+    $insert = $conn->prepare("INSERT INTO usuarios (usuario, creditos) VALUES (?, ?)");
+    $insert->bind_param("si", $usuario, $creditos);
+    $insert->execute();
 }
+
+// Telegram solo si es compra
+if ($creditos > 0 && $monto > 0) {
+    $mensaje = "PAGO CONFIRMADO ✅\nUsuario: $usuario\nMétodo: $metodo\nCréditos: $creditos\nMonto: $$monto";
+
+    $url = "https://api.telegram.org/bot$botToken/sendMessage?chat_id=$chat_id&text=" . urlencode($mensaje);
+
+    // CURL (más seguro)
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
+}
+
+echo json_encode(['success' => true]);
+$conn->close();
 ?>
