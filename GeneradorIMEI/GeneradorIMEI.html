@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador IMEI PRO</title>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             margin: 0;
@@ -17,7 +22,7 @@
             align-items: center;
             height: 100vh;
         }
-        
+
         .card {
             background: #001a12;
             padding: 30px;
@@ -30,406 +35,175 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         h1 {
             text-shadow: 0 0 15px #00ff99;
-            margin-bottom: 20px;
         }
-        
+
         select,
         input,
         button {
             width: 90%;
-            max-width: 380px;
             padding: 10px;
             border-radius: 10px;
             border: none;
             background: #00291d;
             color: #00ff99;
-            text-align: center;
-            font-size: 16px;
         }
-        
-        button {
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+
+        button:hover {
+            box-shadow: 0 0 15px #00ff99;
         }
-        
-        button:hover:enabled {
-            box-shadow: 0 0 20px #00ff99;
-            transform: scale(1.05);
-        }
-        
-        button:disabled {
-            background: #003d2a;
-            color: #006644;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-        
+
         .output {
-            width: 90%;
-            max-width: 380px;
-            margin-top: 15px;
-            padding: 15px;
+            padding: 10px;
             background: #00291d;
             border-radius: 10px;
-            font-size: 20px;
-            letter-spacing: 3px;
-            text-align: center;
         }
-        
-        .fade-slide {
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.4s ease;
-            display: none;
-        }
-        
-        .fade-slide.show {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
+
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0,0,0,0.8);
             display: none;
             justify-content: center;
             align-items: center;
         }
-        
+
         .modal-content {
             background: #001a12;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 0 20px #00ff99;
-            width: 360px;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        #metodosPago button {
-            width: 80%;
-            margin: 5px 0;
-        }
-        
-        #qrPago {
-            margin-top: 10px;
-            max-width: 250px;
-            border: 2px solid #00ff99;
-            border-radius: 10px;
-            display: none;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="card">
-        <h1>Generador IMEI UnlockServerPro</h1>
+<div class="card">
+    <h1>Generador IMEI</h1>
 
-        <input type="text" id="username" placeholder="Ingresa tu usuario" />
+    <input type="text" id="username" placeholder="Usuario">
 
-        <select id="modo">
-            <option value="list">From List</option>
-            <option value="random">Random</option>
-            <option value="custom">Custom (8 dígitos)</option>
+    <button onclick="abrirCarrito()">Comprar Créditos</button>
+
+    <div class="output" id="resultado">---</div>
+    <p id="creditosActuales">Créditos: 0</p>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="carritoModal">
+    <div class="modal-content">
+        <h3>Comprar Créditos</h3>
+
+        <select id="seleccionCreditos">
+            <option value="">Elegir</option>
+            <option value="10">10 Créditos</option>
+            <option value="50">50 Créditos</option>
         </select>
 
-        <select id="marca" class="fade-slide"></select>
-        <select id="modelo" class="fade-slide"></select>
+        <br><br>
 
-        <input type="text" id="customInput" maxlength="8" placeholder="Ingresa 8 dígitos" class="fade-slide">
+        <button onclick="mostrarQR()">Mostrar QR</button>
 
-        <button id="btnGenerar" onclick="generar()">Generar IMEI</button>
-        <button onclick="abrirCarrito()">Comprar Créditos</button>
+        <br><br>
 
-        <div class="output" id="resultado">---</div>
-        <p id="creditosActuales">Créditos: 0</p>
+        <button onclick="confirmarPago()">PAGO CONFIRMADO</button>
+
+        <br><br>
+
+        <button onclick="cerrarCarrito()">Cerrar</button>
     </div>
+</div>
 
-    <!-- Modal Carrito -->
-    <div class="modal" id="carritoModal">
-        <div class="modal-content">
-            <h3>Comprar Créditos</h3>
-            <p>Selecciona la cantidad de créditos:</p>
-            <select id="seleccionCreditos">
-                <option value="">-- Elige Créditos --</option>
-                <option value="10">10 Créditos - $5</option>
-                <option value="50">50 Créditos - $20</option>
-                <option value="100">100 Créditos - $35</option>
-            </select>
+<script>
+let username = "";
+let creditos = 0;
+let cantidadSeleccionada = 0;
 
-            <div id="metodosPago" class="fade-slide">
-                <p>Selecciona método de pago:</p>
-                <button onclick="mostrarQR('Binance')">Binance</button>
-                <button onclick="mostrarQR('PayPal')">PayPal</button>
-                <button onclick="mostrarQR('Yape')">Yape</button>
-            </div>
+const modal = document.getElementById("carritoModal");
+const creditosTxt = document.getElementById("creditosActuales");
 
-            <img id="qrPago" src="" alt="QR de Pago">
-            <button id="btnConfirmarPago" style="display:none;" onclick="confirmarPago()">PAGO CONFIRMADO</button>
+document.getElementById("username").addEventListener("input", e=>{
+    username = e.target.value;
+    cargarCreditos();
+});
 
-            <p id="infoPago"></p>
-            <button onclick="cerrarCarrito()">Cerrar</button>
-        </div>
-    </div>
+document.getElementById("seleccionCreditos").addEventListener("change", e=>{
+    cantidadSeleccionada = parseInt(e.target.value) || 0;
+});
 
-    <script>
-        const datos = {
-            "HONOR": ["X8", "Magic 5"],
-            "SAMSUNG": ["S21", "A54"],
-            "HUAWEI": ["P50", "Nova 11"],
-            "REDMI": ["Note 12", "Note 13"],
-            "OPPO": ["Reno 8", "Find X5"],
-            "VIVO": ["V25", "X90"],
-            "IPHONE": ["11", "12", "13", "14", "15"]
-        };
+// ===== LOCAL STORAGE =====
 
-        const qrUrls = {
-            "Binance": "TU_URL_BINANCE",
-            "PayPal": "TU_URL_PAYPAL",
-            "Yape": "TU_URL_YAPE"
-        };
+function guardarCreditos(valor){
+    let data = JSON.parse(localStorage.getItem("users")) || {};
 
-        let username = "",
-            creditos = 0,
-            cantidadSeleccionada = 0,
-            montoSeleccionado = 0;
+    if(!data[username]) data[username] = 0;
 
-        const modo = document.getElementById("modo"),
-            marca = document.getElementById("marca"),
-            modelo = document.getElementById("modelo"),
-            customInput = document.getElementById("customInput"),
-            btnGenerar = document.getElementById("btnGenerar"),
-            creditosActuales = document.getElementById("creditosActuales"),
-            carritoModal = document.getElementById("carritoModal"),
-            seleccionCreditos = document.getElementById("seleccionCreditos"),
-            metodosPago = document.getElementById("metodosPago"),
-            qrPago = document.getElementById("qrPago"),
-            btnConfirmarPago = document.getElementById("btnConfirmarPago"),
-            usernameInput = document.getElementById("username"),
-            infoPago = document.getElementById("infoPago");
+    data[username] += valor;
 
-        // Cargar marcas
-        marca.innerHTML = `<option value="">Selecciona Marca</option>`;
-        for (let m in datos) marca.innerHTML += `<option value="${m}">${m}</option>`;
+    if(data[username] < 0) data[username] = 0;
 
-        usernameInput.addEventListener("change", () => {
-            username = usernameInput.value.trim();
-            if (username) cargarCreditos();
-        });
+    localStorage.setItem("users", JSON.stringify(data));
+}
 
-        marca.addEventListener("change", () => {
-            modelo.innerHTML = `<option value="">Selecciona Modelo</option>`;
-            if (datos[marca.value]) datos[marca.value].forEach(mod => modelo.innerHTML += `<option value="${mod}">${mod}</option>`);
-            validarGenerar();
-        });
+function cargarCreditos(){
+    let data = JSON.parse(localStorage.getItem("users")) || {};
+    creditos = data[username] || 0;
+    actualizar();
+}
 
-        modelo.addEventListener("change", validarGenerar);
-        customInput.addEventListener("input", validarGenerar);
+function actualizar(){
+    creditosTxt.textContent = "Créditos: " + creditos;
+}
 
-        modo.addEventListener("change", () => {
-            ocultarTodo();
-            if (modo.value === "list") {
-                mostrar(marca);
-                mostrar(modelo);
-            }
-            if (modo.value === "custom") {
-                mostrar(customInput);
-            }
-            validarGenerar();
-        });
+// ===== UI =====
 
-        seleccionCreditos.addEventListener("change", () => {
-            if (seleccionCreditos.value) {
-                metodosPago.classList.add('show');
-                cantidadSeleccionada = parseInt(seleccionCreditos.value);
-                montoSeleccionado = (cantidadSeleccionada === 10 ? 5 : cantidadSeleccionada === 50 ? 20 : 35);
-                qrPago.style.display = "none";
-                btnConfirmarPago.style.display = "none";
-            } else {
-                metodosPago.classList.remove('show');
-                qrPago.style.display = "none";
-                btnConfirmarPago.style.display = "none";
-            }
-        });
+function abrirCarrito(){
+    if(!username){
+        Swal.fire('Error','Ingresa usuario','error');
+        return;
+    }
+    modal.style.display = "flex";
+}
 
-        function mostrar(el) {
-            el.classList.add("show");
-        }
+function cerrarCarrito(){
+    modal.style.display = "none";
+}
 
-        function ocultarTodo() {
-            marca.classList.remove("show");
-            modelo.classList.remove("show");
-            customInput.classList.remove("show");
-        }
+function mostrarQR(){
+    Swal.fire('QR','Aquí pondrías tu QR 😎','info');
+}
 
-        function validarGenerar() {
-            if (!username) {
-                btnGenerar.disabled = true;
-                return;
-            }
-            if (modo.value === "list") {
-                btnGenerar.disabled = !(marca.value && modelo.value);
-                return;
-            }
-            if (modo.value === "custom") {
-                btnGenerar.disabled = !/^\d{8}$/.test(customInput.value);
-                return;
-            }
-            btnGenerar.disabled = false;
-        }
+// ===== SWEET ALERT =====
 
-    function generar() {
-    if (btnGenerar.disabled) return;
+function confirmarPago(){
 
-    if (creditos <= 0) {
-        alert("No tienes créditos.");
+    if(cantidadSeleccionada <= 0){
+        Swal.fire('Error','Selecciona créditos','error');
         return;
     }
 
-    let codigo = (modo.value === "custom")
-        ? customInput.value + randomNums(7)
-        : randomNums(15);
+    guardarCreditos(cantidadSeleccionada);
+    cargarCreditos();
 
-    animarCodigo(codigo);
-    navigator.clipboard.writeText(codigo);
-
-    creditos--;
-
-    fetch('guardar_creditos.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            usuario: username,
-            creditos: -1,
-            monto: 0,
-            metodo: "Uso de créditos"
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        console.log(data);
-        if (!data.success) {
-            alert("Error actualizando créditos");
-        }
+    Swal.fire({
+        title: 'Pago confirmado',
+        text: 'Tus créditos fueron agregados correctamente',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        background: '#001a12',
+        color: '#00ff99',
+        confirmButtonColor: '#00ff99'
     });
 
-    actualizarCreditos();
+    cerrarCarrito();
 }
+</script>
 
-        function randomNums(n) {
-            let r = "";
-            for (let i = 0; i < n; i++) r += Math.floor(Math.random() * 10);
-            return r;
-        }
-
-        function animarCodigo(final) {
-            let temp = "",
-                i = 0;
-            const interval = setInterval(() => {
-                temp += Math.floor(Math.random() * 10);
-                document.getElementById("resultado").textContent = temp;
-                i++;
-                if (i >= 15) {
-                    clearInterval(interval);
-                    document.getElementById("resultado").textContent = final;
-                }
-            }, 40);
-        }
-
-        function abrirCarrito() {
-            if (!username) {
-                alert("Ingresa un usuario");
-                return;
-            }
-            carritoModal.style.display = "flex";
-            infoPago.textContent = "";
-            metodosPago.classList.remove('show');
-            qrPago.style.display = "none";
-            btnConfirmarPago.style.display = "none";
-            seleccionCreditos.value = "";
-        }
-
-        function cerrarCarrito() {
-            carritoModal.style.display = "none";
-        }
-
-        function mostrarQR(metodo) {
-            qrPago.src = qrUrls[metodo];
-            qrPago.style.display = "block";
-            btnConfirmarPago.style.display = "block";
-            infoPago.textContent = `Escanea el QR para pagar con ${metodo}`;
-            btnConfirmarPago.dataset.metodo = metodo;
-        }
-
-        function confirmarPago() {
-            let metodo = btnConfirmarPago.dataset.metodo;
-            fetch('guardar_creditos.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        usuario: username,
-                        creditos: cantidadSeleccionada,
-                        monto: montoSeleccionado,
-                        metodo: metodo
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        // Mensaje de confirmación en modal
-                        infoPago.textContent = "Compra Realizada ✅";
-                        cargarCreditos();
-                        setTimeout(() => cerrarCarrito(), 2000); // Cierra el modal automáticamente
-                    } else alert("Error al confirmar pago: " + data.msg);
-                });
-        }
-
-        function actualizarCreditos() {
-            creditosActuales.textContent = "Créditos: " + creditos;
-        }
-
-        function guardarCreditos(metodo = "Uso de créditos", monto = 0) {
-            fetch('guardar_creditos.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    usuario: username,
-                    creditos: 0,
-                    monto: monto,
-                    metodo: metodo
-                })
-            }).then(res => res.json()).then(data => {
-                if (!data.success) console.error("Error actualizar créditos:", data.msg);
-            });
-        }
-
-        function cargarCreditos() {
-            fetch(`leer_creditos.php?usuario=${username}`)
-                .then(res => res.json())
-                .then(data => {
-                    creditos = data.success ? parseInt(data.creditos) : 0;
-                    actualizarCreditos();
-                });
-        }
-    </script>
 </body>
-
-
 </html>
