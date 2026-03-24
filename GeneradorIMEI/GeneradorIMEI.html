@@ -291,19 +291,43 @@
             btnGenerar.disabled = false;
         }
 
-        function generar() {
-            if (btnGenerar.disabled) return;
-            if (creditos <= 0) {
-                alert("No tienes créditos.");
-                return;
-            }
-            let codigo = (modo.value === "custom") ? customInput.value + randomNums(7) : randomNums(15);
-            animarCodigo(codigo);
-            navigator.clipboard.writeText(codigo);
-            creditos--;
-            guardarCreditos("Uso de créditos", 0);
-            actualizarCreditos();
+    function generar() {
+    if (btnGenerar.disabled) return;
+
+    if (creditos <= 0) {
+        alert("No tienes créditos.");
+        return;
+    }
+
+    let codigo = (modo.value === "custom")
+        ? customInput.value + randomNums(7)
+        : randomNums(15);
+
+    animarCodigo(codigo);
+    navigator.clipboard.writeText(codigo);
+
+    creditos--;
+
+    fetch('guardar_creditos.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            usuario: username,
+            creditos: -1,
+            monto: 0,
+            metodo: "Uso de créditos"
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        if (!data.success) {
+            alert("Error actualizando créditos");
         }
+    });
+
+    actualizarCreditos();
+}
 
         function randomNums(n) {
             let r = "";
@@ -406,5 +430,6 @@
         }
     </script>
 </body>
+
 
 </html>
